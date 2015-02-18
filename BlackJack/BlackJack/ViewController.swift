@@ -25,6 +25,8 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var playerTotalBalance: UITextField!
 
+    @IBOutlet weak var gameStatus: UILabel!
+    
     var cardsInDealerHand = Array<Int>()
     
     var cardsInPlayerHand = Array<Int>()
@@ -45,12 +47,10 @@ class ViewController: UIViewController {
     
     var isPlayerWon = false
     
-    var numberOfGamesPlayed=0
-    
     @IBAction func play() {
-        if bet == nil {
-        println("Bet is empty . Please input some bet to proceed ")
-        return
+        if bet.text == nil || bet.text == "" {
+            println("Player has to bet ")
+            return
         }
         
         if isGreater( bet.text.toInt()! ) == false
@@ -58,37 +58,30 @@ class ViewController: UIViewController {
             println("You cant play")
             return
         }
-    
         
-        // Deck will shuffle after 5 rounds
-                initializeDeck()
-        if numberOfGamesPlayed%5 == 0 {
-            mixCards = mixCards.mixCards()
-        }
-        
+        initializeDeck()
     
         if  mixCards.count == 0 {
             println("No more cards in Deck ")
             return
         }
-        cardsInDealerHand.append(distributeCards())
-        cardsInDealerHand.append(distributeCards())
+        cardsInPlayerHand.append(distributeCards())
+        cardsInPlayerHand.append(distributeCards())
         cardsInDealerHand.append(distributeCards())
         cardsInDealerHand.append(distributeCards())
         println("playerHand - \(cardsInPlayerHand)")
         println("dealerHand - \(cardsInDealerHand)")
         displayPlayerHands()
         displayDealerHandsWithFlip()
-        //displayNumberOfTimesPlayed()
         displayPlayerTotalBalance()
         playerBet = bet.text.toInt()!
-        numberOfGamesPlayed++
         
         if isBlackJack(cardsInPlayerHand) == true
         {
             playerBalanceChange(true)
             displayPlayerTotalBalance()
             resetFields()
+            gameStatus.text = "Player Won"
             println("Player Won")
             return
         }
@@ -97,11 +90,10 @@ class ViewController: UIViewController {
             playerBalanceChange(false)
             displayPlayerTotalBalance()
             resetFields()
+            gameStatus.text = "Player lost"
             println("Player lost")
             return
         }
-        
-    
 
     }
         
@@ -146,11 +138,11 @@ class ViewController: UIViewController {
         println("dealer Card sum after stand \(dealerCardsSum)")
         println("dealer Cards \(cardsInDealerHand)")
         if(dealerCardsSum>21){
+            gameStatus.text = "Player Won"
             println("player won !! while dealter is trying to get above 16")
             playerWon()
             return
         }
-        
         if(dealerCardsSum > playerCardsSum){
             println("dealer sum \(dealerCardsSum) > player sum \(playerCardsSum)")
             playerLost()
@@ -170,7 +162,7 @@ class ViewController: UIViewController {
     
     func initializeDeck() {
         var Suit = ["S","H","D","C"]
-        var Card = ["Ace","2","3","4","5","6","7","8","9","10","Jack","Queen","King"]
+        var Card = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"]
         var deck : [String] = []
         for suit in Suit{
             for card in Card {
@@ -180,9 +172,6 @@ class ViewController: UIViewController {
         mixCards = deck.mixCards()
     }
   
-
-    
-    
     func isBlackJack(cardsInHand : Array<Int>) -> Bool {
         var Count = 0
         for eachCard in cardsInHand {
@@ -226,7 +215,7 @@ class ViewController: UIViewController {
     func distributeCards()-> Int
     {
         if(mixCards.count>0){
-            var currentCardValue :Int = getValueOfCard("\(mixCards[0])").0
+            var currentCardValue :Int = getCardValueInInt("\(mixCards[0])").0
             mixCards.removeAtIndex(0)
             return currentCardValue
         }
@@ -237,6 +226,7 @@ class ViewController: UIViewController {
         playerBalanceChange(true)
         displayPlayerTotalBalance()
         resetFields()
+        gameStatus.text = "Player Won"
         println("Player Won")
     }
     
@@ -244,8 +234,8 @@ class ViewController: UIViewController {
         playerBalanceChange(false)
         displayPlayerTotalBalance()
         resetFields()
+        gameStatus.text = "Player lost"
         println("Player lost")
-        
     }
     
     func resetFields(){
@@ -272,12 +262,14 @@ class ViewController: UIViewController {
     func displayPlayerHands() {
         playerHand.text = ""
         playerTotalBalance.text = ""
+        playerSum.text = ""
         var Total = 0
         for card in cardsInPlayerHand {
             Total += card
-            playerTotalBalance.text = playerTotalBalance.text! + "\(card)" + " ** "
+            
+            playerHand.text = playerHand.text! + "\(card)" + " | "
         }
-        playerTotalBalance.text = playerTotalBalance.text! + "\(Total)"
+        playerSum.text = playerSum.text! + "\(Total)"
     }
     
     func displayDealerHandWithFlip() {
@@ -285,40 +277,35 @@ class ViewController: UIViewController {
         var isFlip = true
         for dc in cardsInDealerHand {
             if isFlip {
-                dealerHand.text = dealerHand.text! + "X" + " ** "
+                dealerHand.text = dealerHand.text! + "X" + " | "
                 isFlip = false
             }else{
-                dealerHand.text = dealerHand.text! + "\(dc)" + " ** "
+                dealerHand.text = dealerHand.text! + "\(dc)" + " | "
             }
         }
     }
     
     func displayPlayerTotalBalance() {
         playerTotalBalance.text = ""
-        playerTotalBalance.text = playerTotalBalance.text! + "\(playerTotalBalance)"
+        playerTotalBalance.text = playerTotalBalance.text! + "\(playerBalance)"
     }
-
-//func displayNumberOfTimesPlayed() {
-    //numberOfTimesPlayed.text = ""
-   // numberOfTimesPlayed.text = numberOfTimes.text! + "\(numberOfGamesPlayed)"
-
 
 func displayDealerHandsWithFlip() {
    dealerHand.text = ""
     var firstCard = true
     for dc in  cardsInDealerHand{
         if firstCard {
-            dealerHand.text = dealerHand.text! + "FLIP" + " , "
+            dealerHand.text = dealerHand.text! + " X " + " | "
             firstCard = false
         }else{
-            dealerHand.text = dealerHand.text! + "\(dc)" + " , "
+            dealerHand.text = dealerHand.text! + "\(dc)" + " | "
         }
     }
 }
 
 
 
-    func getValueOfCard(card : String) -> Int  {
+    func getCardValueInInt(card : String) -> Int  {
         var card_value = split( card, {$0 == "+"})
         switch card_value[0]
         {
@@ -356,6 +343,8 @@ func displayDealerHandsWithFlip() {
 
 
    }
+
+
 //reference from google
 extension Array {
     func mixCards() -> [T] {
