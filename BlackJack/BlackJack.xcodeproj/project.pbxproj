@@ -77,11 +77,8 @@
 		2626703F1A9166400080C359 /* BlackJack */ = {
 			isa = PBXGroup;
 			children = (
-				262670421A9166400080C359 /* AppDelegate.swift */,
 				262670441A9166400080C359 /* ViewController.swift */,
 				262670461A9166400080C359 /* Main.storyboard */,
-				262670491A9166400080C359 /* Images.xcassets */,
-				2626704B1A9166400080C359 /* LaunchScreen.xib */,
 				262670401A9166400080C359 /* Supporting Files */,
 			);
 			path = BlackJack;
@@ -90,6 +87,9 @@
 		262670401A9166400080C359 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				262670491A9166400080C359 /* Images.xcassets */,
+				2626704B1A9166400080C359 /* LaunchScreen.xib */,
+				262670421A9166400080C359 /* AppDelegate.swift */,
 				262670411A9166400080C359 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -407,6 +407,7 @@
 				2626705E1A9166400080C359 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2626705F1A9166400080C359 /* Build configuration list for PBXNativeTarget "BlackJackTests" */ = {
 			isa = XCConfigurationList;
@@ -415,6 +416,7 @@
 				262670611A9166400080C359 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
